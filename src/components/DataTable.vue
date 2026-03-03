@@ -3,6 +3,7 @@ import { syncData } from '@/data/data'
 import DataTableRow from './DataTableRow.vue'
 import { ref, watch, computed } from 'vue'
 import CreateNewRow from './CreateNewRow.vue'
+import { TrashIcon, PencilIcon, PlusIcon, ArrowDownIcon, ArrowUpIcon } from '@primevue/icons'
 
 type RowData = {
   id: string
@@ -20,7 +21,6 @@ const localStorageData:
   : null
 
 const tableRows = ref(localStorageData ?? syncData)
-const addNewRowOpen = ref(false)
 const highlightedRowId = ref<string | null>(null)
 
 const sortedColKey = ref<undefined | keyof RowData>(undefined)
@@ -65,7 +65,6 @@ const handleAddRow = (newRow: {
 }) => {
   const newRowWithId = { ...newRow, id: crypto.randomUUID() }
   tableRows.value.push(newRowWithId)
-  addNewRowOpen.value = false
 }
 
 const handleRowUpdate = (updatedRow: {
@@ -87,52 +86,58 @@ const handleRowDelete = (id: string) => {
 
 <template>
   <div>
-    <button @click="addNewRowOpen = !addNewRowOpen">
-      {{ addNewRowOpen ? 'Close' : 'Add New Row' }}
-    </button>
-    <CreateNewRow v-if="addNewRowOpen" @addRow="handleAddRow" />
-    <div class="tableHeader">
-      <span @click="sortByColumn('id')"
-        >Id
-        <span>{{
-          sortedColKey === 'id' ? (sortedColDirection === 'asc' ? '▲' : '▼') : ''
-        }}</span></span
-      >
-      <span @click="sortByColumn('parent_id')"
-        >Parent Id
-        <span>{{
-          sortedColKey === 'parent_id' ? (sortedColDirection === 'asc' ? '▲' : '▼') : ''
-        }}</span></span
-      >
-      <span @click="sortByColumn('name')"
-        >Name
-        <span>{{
-          sortedColKey === 'name' ? (sortedColDirection === 'asc' ? '▲' : '▼') : ''
-        }}</span></span
-      >
-      <span @click="sortByColumn('radius')"
-        >Radius
-        <span>{{
-          sortedColKey === 'radius' ? (sortedColDirection === 'asc' ? '▲' : '▼') : ''
-        }}</span></span
-      >
-      <span @click="sortByColumn('type')"
-        >Type
-        <span>{{
-          sortedColKey === 'type' ? (sortedColDirection === 'asc' ? '▲' : '▼') : ''
-        }}</span></span
-      >
-    </div>
-    <div>
-      <DataTableRow
-        v-for="row in sortedRows"
-        :key="row.id"
-        :rawRowData="row"
-        @update="handleRowUpdate"
-        @delete="handleRowDelete"
-        @click="highlightedRowId = row.id"
-        :isHighlighted="highlightedRowId === row.id"
-      />
+    <TrashIcon />
+    <PencilIcon />
+    <PlusIcon />
+    <ArrowDownIcon />
+    <ArrowUpIcon />
+  </div>
+  <div>
+    <CreateNewRow @addRow="handleAddRow" />
+    <div class="tableContainer">
+      <div class="tableHeader">
+        <span @click="sortByColumn('id')"
+          >Id
+          <span>{{
+            sortedColKey === 'id' ? (sortedColDirection === 'asc' ? '▲' : '▼') : ''
+          }}</span></span
+        >
+        <span @click="sortByColumn('parent_id')"
+          >Parent Id
+          <span>{{
+            sortedColKey === 'parent_id' ? (sortedColDirection === 'asc' ? '▲' : '▼') : ''
+          }}</span></span
+        >
+        <span @click="sortByColumn('name')"
+          >Name
+          <span>{{
+            sortedColKey === 'name' ? (sortedColDirection === 'asc' ? '▲' : '▼') : ''
+          }}</span></span
+        >
+        <span @click="sortByColumn('radius')"
+          >Radius
+          <span>{{
+            sortedColKey === 'radius' ? (sortedColDirection === 'asc' ? '▲' : '▼') : ''
+          }}</span></span
+        >
+        <span @click="sortByColumn('type')"
+          >Type
+          <span>{{
+            sortedColKey === 'type' ? (sortedColDirection === 'asc' ? '▲' : '▼') : ''
+          }}</span></span
+        >
+      </div>
+      <div class="tableRows">
+        <DataTableRow
+          v-for="row in sortedRows"
+          :key="row.id"
+          :rawRowData="row"
+          @update="handleRowUpdate"
+          @delete="handleRowDelete"
+          @click="highlightedRowId = row.id"
+          :isHighlighted="highlightedRowId === row.id"
+        />
+      </div>
     </div>
   </div>
 </template>

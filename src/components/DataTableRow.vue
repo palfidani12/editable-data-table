@@ -12,7 +12,6 @@ const props = defineProps<{
 }>()
 const emit = defineEmits(['delete', 'update'])
 
-// const rowData = ref(props.rawRowData)
 const isEditing = ref(false)
 const editedRowData = ref({ ...props.rawRowData })
 
