@@ -8,6 +8,7 @@ const props = defineProps<{
     radius: number
     type: string
   }
+  isHighlighted: boolean
 }>()
 const emit = defineEmits(['delete', 'update'])
 
@@ -30,7 +31,7 @@ const handleDelete = () => {
 </script>
 
 <template>
-  <div class="rowContainer">
+  <div class="rowContainer" :class="{ highlighted: props.isHighlighted }">
     <div>
       <span>
         {{ props.rawRowData.id }}
@@ -80,5 +81,9 @@ const handleDelete = () => {
 .rowContainer {
   display: flex;
   gap: 1rem;
+}
+
+.highlighted {
+  border: 3px solid blue;
 }
 </style>
