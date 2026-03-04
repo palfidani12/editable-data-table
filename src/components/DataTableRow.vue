@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { TrashIcon, PencilIcon } from '@primevue/icons'
 const props = defineProps<{
   rawRowData: {
     id: string
@@ -15,74 +16,178 @@ const emit = defineEmits(['delete', 'update'])
 const isEditing = ref(false)
 const editedRowData = ref({ ...props.rawRowData })
 
-const handleSave = () => {
+const handleSave = (e: PointerEvent) => {
   emit('update', { ...editedRowData.value })
   isEditing.value = false
+  e.stopPropagation()
 }
 
-const handleCancel = () => {
+const handleCancel = (e: PointerEvent) => {
   isEditing.value = false
+  e.stopPropagation()
 }
 
-const handleDelete = () => {
+const handleDelete = (e: PointerEvent) => {
   emit('delete', props.rawRowData.id)
+  e.stopPropagation()
+}
+
+const handleEdit = (e: PointerEvent) => {
+  isEditing.value = true
+  e.stopPropagation()
 }
 </script>
 
 <template>
-  <div class="rowContainer" :class="{ highlighted: props.isHighlighted }">
-    <div>
+  <tr :class="{ highlighted: props.isHighlighted }">
+    <td>
       <span>
         {{ props.rawRowData.id }}
       </span>
-    </div>
-    <div>
+    </td>
+    <td>
       <span v-if="!isEditing">
         {{ props.rawRowData.parent_id }}
       </span>
-      <input v-if="isEditing" type="text" v-model="editedRowData.parent_id" />
-    </div>
-    <div>
+      <input v-if="isEditing" class="cellInput" type="text" v-model="editedRowData.parent_id" />
+    </td>
+    <td>
       <span v-if="!isEditing">
         {{ props.rawRowData.name }}
       </span>
-      <input v-if="isEditing" type="text" v-model="editedRowData.name" />
-    </div>
-    <div>
+      <input v-if="isEditing" class="cellInput" type="text" v-model="editedRowData.name" />
+    </td>
+    <td>
       <span v-if="!isEditing">
         {{ props.rawRowData.radius }}
       </span>
-      <input v-if="isEditing" type="number" v-model.number="editedRowData.radius" />
-    </div>
-    <div>
+      <input
+        v-if="isEditing"
+        class="cellInput"
+        type="number"
+        v-model.number="editedRowData.radius"
+      />
+    </td>
+    <td>
       <span v-if="!isEditing">
         {{ props.rawRowData.type }}
       </span>
-      <div v-if="isEditing">
-        <input type="radio" id="bubble" value="bubble" v-model="editedRowData.type" />
-        <label for="bubble">Bubble</label>
-
-        <input type="radio" id="crack" value="crack" v-model="editedRowData.type" />
-        <label for="crack">Crack</label>
-
-        <input type="radio" id="scratch" value="scratch" v-model="editedRowData.type" />
-        <label for="scratch">Scratch</label>
+      <div v-if="isEditing" class="inlineRadios">
+        <label>
+          <input type="radio" value="bubble" v-model="editedRowData.type" />
+          Bubble
+        </label>
+        <label>
+          <input type="radio" value="crack" v-model="editedRowData.type" />
+          Crack
+        </label>
+        <label>
+          <input type="radio" value="scratch" v-model="editedRowData.type" />
+          Scratch
+        </label>
       </div>
-    </div>
-    <button @click="isEditing = true">Edit</button>
-    <button @click="handleDelete">Delete</button>
-    <button v-if="isEditing" @click="handleSave">Save</button>
-    <button v-if="isEditing" @click="handleCancel">Cancel</button>
-  </div>
+    </td>
+    <td>
+      <button class="btn neutral" v-if="!isEditing" @click="handleEdit"><PencilIcon /></button>
+      <button class="btn danger" v-if="!isEditing" @click="handleDelete">
+        <TrashIcon />
+      </button>
+      <button class="btn primary" v-if="isEditing" @click="handleSave">Save</button>
+      <button class="btn neutral" v-if="isEditing" @click="handleCancel">Cancel</button>
+    </td>
+  </tr>
 </template>
 
 <style scoped>
-.rowContainer {
-  display: flex;
-  gap: 1rem;
+tr {
+  background: var(--surface);
+}
+
+td {
+  padding: 0.6rem 0.65rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  vertical-align: middle;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+td:nth-child(1),
+td:nth-child(2) {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  word-break: break-word;
+}
+
+td:first-child {
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+    monospace;
+  font-size: 0.81rem;
+  color: var(--text-muted);
+}
+
+td:last-child {
+  width: 130px;
+}
+
+tr:last-child td {
+  border-bottom: 1px solid var(--border);
 }
 
 .highlighted {
-  border: 3px solid blue;
+  background: #eef4ff;
+}
+
+.cellInput {
+  width: 100%;
+  max-width: 140px;
+  padding: 0.45rem 0.6rem;
+  background: var(--surface-2);
+}
+
+.inlineRadios {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  font-size: 0.9rem;
+}
+
+.inlineRadios label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.rowActions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.btn {
+  padding: 0.45rem 0.65rem;
+  font-size: 0.86rem;
+  border: 1px solid transparent;
+}
+
+.btn.primary {
+  color: var(--accent-contrast);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.btn.neutral {
+  color: var(--text);
+  background: var(--surface);
+  border-color: var(--border-strong);
+}
+
+.btn.danger {
+  color: var(--danger);
+  background: var(--danger-soft);
+  border-color: #f2cfcf;
 }
 </style>
