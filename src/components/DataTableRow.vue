@@ -11,7 +11,7 @@ const props = defineProps<{
   }
   isHighlighted: boolean
 }>()
-const emit = defineEmits(['delete', 'update'])
+const emit = defineEmits(['delete', 'update', 'rowSelected'])
 
 const isEditing = ref(false)
 const editedRowData = ref({ ...props.rawRowData })
@@ -36,10 +36,14 @@ const handleEdit = (e: PointerEvent) => {
   isEditing.value = true
   e.stopPropagation()
 }
+
+const handleSelectRow = () => {
+  if (!isEditing.value) emit('rowSelected')
+}
 </script>
 
 <template>
-  <tr :class="{ highlighted: props.isHighlighted }">
+  <tr :class="{ highlighted: props.isHighlighted }" @click="handleSelectRow">
     <td>
       <span>
         {{ props.rawRowData.id }}
@@ -49,19 +53,32 @@ const handleEdit = (e: PointerEvent) => {
       <span v-if="!isEditing">
         {{ props.rawRowData.parent_id }}
       </span>
-      <input v-if="isEditing" class="cellInput" type="text" v-model="editedRowData.parent_id" />
+      <input
+        id="editParentId"
+        v-if="isEditing"
+        class="cellInput"
+        type="text"
+        v-model="editedRowData.parent_id"
+      />
     </td>
     <td>
       <span v-if="!isEditing">
         {{ props.rawRowData.name }}
       </span>
-      <input v-if="isEditing" class="cellInput" type="text" v-model="editedRowData.name" />
+      <input
+        id="editName"
+        v-if="isEditing"
+        class="cellInput"
+        type="text"
+        v-model="editedRowData.name"
+      />
     </td>
     <td>
       <span v-if="!isEditing">
         {{ props.rawRowData.radius }}
       </span>
       <input
+        id="editRadius"
         v-if="isEditing"
         class="cellInput"
         type="number"
@@ -74,15 +91,15 @@ const handleEdit = (e: PointerEvent) => {
       </span>
       <div v-if="isEditing" class="inlineRadios">
         <label>
-          <input type="radio" value="bubble" v-model="editedRowData.type" />
+          <input id="editTypeBubble" type="radio" value="bubble" v-model="editedRowData.type" />
           Bubble
         </label>
         <label>
-          <input type="radio" value="crack" v-model="editedRowData.type" />
+          <input id="editTypeCrack" type="radio" value="crack" v-model="editedRowData.type" />
           Crack
         </label>
         <label>
-          <input type="radio" value="scratch" v-model="editedRowData.type" />
+          <input id="editTypeScratch" type="radio" value="scratch" v-model="editedRowData.type" />
           Scratch
         </label>
       </div>
@@ -101,6 +118,10 @@ const handleEdit = (e: PointerEvent) => {
 <style scoped>
 tr {
   background: var(--surface);
+}
+
+tr:not(.highlighted):hover {
+  background: var(--surface-hover);
 }
 
 td {

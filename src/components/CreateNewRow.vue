@@ -74,6 +74,7 @@ const handleSubmit = () => {
             v-model="newRowData.parent_id"
             placeholder="Parent ID"
             class="fullWidth"
+            autocomplete="off"
           />
         </label>
         <label class="fieldLabel" for="name">
@@ -83,6 +84,7 @@ const handleSubmit = () => {
             type="text"
             v-model="newRowData.name"
             placeholder="Name"
+            autocomplete="off"
             class="fullWidth"
             :class="{ error: validationErrors.name }"
           />
@@ -94,6 +96,7 @@ const handleSubmit = () => {
             id="radius"
             type="number"
             v-model.number="newRowData.radius"
+            autocomplete="off"
             placeholder="Radius"
             class="fullWidth"
             :class="{ error: validationErrors.radius }"

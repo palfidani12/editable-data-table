@@ -120,7 +120,7 @@ const handleRowDelete = (id: string) => {
           :rawRowData="row"
           @update="handleRowUpdate"
           @delete="handleRowDelete"
-          @click="highlightedRowId = row.id"
+          @rowSelected="highlightedRowId = row.id"
           :isHighlighted="highlightedRowId === row.id"
         />
       </tbody>
