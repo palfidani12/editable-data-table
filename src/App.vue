@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import DataTable from './components/DataTable.vue'
+import DataTable from './components/data-table/DataTable.vue'
 </script>
 
 <template>

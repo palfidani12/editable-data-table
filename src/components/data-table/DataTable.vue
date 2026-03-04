@@ -2,7 +2,7 @@
 import { syncData } from '@/data/data'
 import DataTableRow from './DataTableRow.vue'
 import { ref, watch, computed } from 'vue'
-import CreateNewRow from './CreateNewRow.vue'
+import CreateNewRow from './create-new-row/CreateNewRow.vue'
 import { ArrowDownIcon, ArrowUpIcon } from '@primevue/icons'
 
 type RowData = {
