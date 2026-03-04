@@ -107,50 +107,25 @@ table {
   border-collapse: collapse;
   border: 1px solid var(--border);
   border-radius: 12px;
-  overflow: hidden;
   background: var(--surface);
   box-shadow: var(--shadow-sm);
   table-layout: fixed;
-}
 
-th {
-  padding: 0.65rem 0.65rem;
-  text-align: left;
-  border-bottom: 1px solid var(--border);
-  background: var(--surface-2);
-  color: var(--text-muted);
-  font-size: 0.9rem;
-  font-weight: 600;
-}
-
-th:nth-child(1) {
-  width: 160px;
-}
-
-th:nth-child(2) {
-  width: 140px;
-}
-
-th:nth-child(3) {
-  width: 120px;
-}
-
-th:nth-child(4) {
-  width: 90px;
-}
-
-th:nth-child(5) {
-  width: 100px;
-}
-
-th:last-child {
-  width: 130px;
+  th {
+    padding: 0.65rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
 }
 
 .headerCell {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.5rem;
   cursor: pointer;
   user-select: none;
 }

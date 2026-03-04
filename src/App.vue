@@ -22,8 +22,7 @@ import DataTable from './components/data-table/DataTable.vue'
 
 h1 {
   margin: 0;
-  font-size: clamp(1.7rem, 2.6vw, 2.35rem);
-  line-height: 1.2;
+  font-size: 2.6vw;
   color: var(--text);
 }
 </style>

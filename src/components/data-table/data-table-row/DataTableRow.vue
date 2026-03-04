@@ -87,7 +87,7 @@ const handleSelectRow = () => {
         v-model="editedRowData.parent_id"
       />
     </td>
-    <td class="validationCell">
+    <td>
       <span v-if="!isEditing">
         {{ props.rawRowData.name }}
       </span>
@@ -101,7 +101,7 @@ const handleSelectRow = () => {
       />
       <span v-if="isEditing && inputErrors.name" class="errorText">{{ inputErrors.name }}</span>
     </td>
-    <td class="validationCell">
+    <td>
       <span v-if="!isEditing">
         {{ props.rawRowData.radius }}
       </span>
@@ -115,7 +115,7 @@ const handleSelectRow = () => {
       />
       <span v-if="isEditing && inputErrors.radius" class="errorText">{{ inputErrors.radius }}</span>
     </td>
-    <td class="validationCell">
+    <td>
       <span v-if="!isEditing">
         {{ props.rawRowData.type }}
       </span>
@@ -136,12 +136,14 @@ const handleSelectRow = () => {
       <span v-if="isEditing && inputErrors.type" class="errorText">{{ inputErrors.type }}</span>
     </td>
     <td>
-      <button class="btn neutral" v-if="!isEditing" @click="handleEdit"><PencilIcon /></button>
-      <button class="btn danger" v-if="!isEditing" @click="handleDelete">
-        <TrashIcon />
-      </button>
-      <button class="btn primary" v-if="isEditing" @click="handleSave">Save</button>
-      <button class="btn neutral" v-if="isEditing" @click="handleCancel">Cancel</button>
+      <div class="editButtons">
+        <button class="btn neutral" v-if="!isEditing" @click="handleEdit"><PencilIcon /></button>
+        <button class="btn danger" v-if="!isEditing" @click="handleDelete">
+          <TrashIcon />
+        </button>
+        <button class="btn primary" v-if="isEditing" @click="handleSave">Save</button>
+        <button class="btn neutral" v-if="isEditing" @click="handleCancel">Cancel</button>
+      </div>
     </td>
   </tr>
 </template>
@@ -149,122 +151,97 @@ const handleSelectRow = () => {
 <style scoped>
 tr {
   background: var(--surface);
+
+  td {
+    padding: 0.6rem 0.65rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    overflow: visible;
+    text-overflow: clip;
+    word-break: break-word;
+
+    &:first-child {
+      font-family:
+        ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+        monospace;
+      font-size: 0.81rem;
+      color: var(--text-muted);
+    }
+
+    .cellInput {
+      width: 100%;
+      padding: 0.45rem 0.6rem;
+      background: var(--surface-2);
+
+      &.inputInvalid {
+        border-color: var(--danger);
+        background: var(--danger-soft);
+      }
+    }
+
+    .inlineRadios {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      font-size: 0.9rem;
+
+      label {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+
+      .radioInvalid {
+        border: 1px solid var(--danger);
+        border-radius: 6px;
+        padding: 0.35rem 0.45rem;
+        background: var(--danger-soft);
+      }
+    }
+    /* adas */
+    .errorText {
+      margin-top: 0.3rem;
+      font-size: 0.78rem;
+      color: var(--danger);
+    }
+
+    .editButtons {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+
+      .btn {
+        padding: 0.45rem 0.65rem;
+        font-size: 0.86rem;
+
+        &.primary {
+          color: var(--accent-contrast);
+          background: var(--accent);
+          border-color: var(--accent);
+        }
+
+        &.neutral {
+          background: var(--surface);
+          border-color: var(--border-strong);
+        }
+
+        &.danger {
+          color: var(--danger);
+          background: var(--danger-soft);
+          border-color: var(--danger-border);
+        }
+      }
+    }
+  }
+
+  &.highlighted {
+    background: var(--surface-highlight);
+  }
 }
 
 tr:not(.highlighted):hover {
   background: var(--surface-hover);
-}
-
-td {
-  padding: 0.6rem 0.65rem;
-  border-bottom: 1px solid var(--border);
-  color: var(--text);
-  vertical-align: middle;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-td:nth-child(1),
-td:nth-child(2) {
-  white-space: normal;
-  overflow: visible;
-  text-overflow: clip;
-  word-break: break-word;
-}
-
-td:first-child {
-  font-family:
-    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
-    monospace;
-  font-size: 0.81rem;
-  color: var(--text-muted);
-}
-
-td:last-child {
-  width: 130px;
-}
-
-.validationCell {
-  white-space: normal;
-}
-
-tr:last-child td {
-  border-bottom: 1px solid var(--border);
-}
-
-.highlighted {
-  background: #eef4ff;
-}
-
-.cellInput {
-  width: 100%;
-  max-width: 140px;
-  padding: 0.45rem 0.6rem;
-  background: var(--surface-2);
-}
-
-.cellInput.inputInvalid {
-  border-color: var(--danger);
-  background: var(--danger-soft);
-}
-
-.inlineRadios {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-  font-size: 0.9rem;
-}
-
-.inlineRadios label {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.inlineRadios.radioInvalid {
-  border: 1px solid var(--danger);
-  border-radius: 6px;
-  padding: 0.35rem 0.45rem;
-  background: var(--danger-soft);
-}
-
-.errorText {
-  display: block;
-  margin-top: 0.3rem;
-  font-size: 0.78rem;
-  line-height: 1.25;
-  color: var(--danger);
-  white-space: normal;
-}
-
-.rowActions {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-}
-
-.btn {
-  padding: 0.45rem 0.65rem;
-  font-size: 0.86rem;
-  border: 1px solid transparent;
-}
-
-.btn.primary {
-  color: var(--accent-contrast);
-  background: var(--accent);
-  border-color: var(--accent);
-}
-
-.btn.neutral {
-  color: var(--text);
-  background: var(--surface);
-  border-color: var(--border-strong);
-}
-
-.btn.danger {
-  color: var(--danger);
-  background: var(--danger-soft);
-  border-color: #f2cfcf;
 }
 </style>

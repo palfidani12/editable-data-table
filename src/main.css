@@ -16,24 +16,23 @@
     'Open Sans',
     'Helvetica Neue',
     sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
 
   --bg: #f5f7fb;
   --surface: #ffffff;
+  --surface-highlight: #eef4ff;
   --surface-hover: #dcdada;
   --surface-2: #f9fafc;
+  --accent: #2f6fed;
   --text: #1c2534;
   --text-muted: #596579;
   --border: #d9e0ea;
-  --border-strong: #bec9d8;
-  --accent: #2f6fed;
-  --accent-contrast: #ffffff;
-  --danger: #c43737;
-  --danger-soft: #fdeeee;
-  --success: #2e7d32;
   --focus-ring: 0 0 0 3px rgb(47 111 237 / 18%);
   --shadow-sm: 0 2px 10px rgb(22 29 37 / 7%);
+  --border-strong: #bec9d8;
+  --danger: #c43737;
+  --danger-soft: #fdeeee;
+  --danger-border: #f2cfcf;
+  --accent-contrast: #ffffff;
 }
 
 html,
@@ -45,7 +44,7 @@ body,
 }
 
 body {
-  background: linear-gradient(180deg, #eff3fb 0%, var(--bg) 100%);
+  background: var(--bg);
   color: var(--text);
 }
 

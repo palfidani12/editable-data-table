@@ -69,7 +69,7 @@ const handleSubmit = () => {
     </button>
     <div v-if="formOpen" class="formComponent">
       <h2>Create New Row</h2>
-      <form class="rowForm" @submit.prevent="handleSubmit">
+      <form @submit.prevent="handleSubmit">
         <label class="fieldLabel" for="parent_id">
           Parent Id
           <input
@@ -77,7 +77,6 @@ const handleSubmit = () => {
             type="text"
             v-model="newRowData.parent_id"
             placeholder="Parent ID"
-            class="fullWidth"
             autocomplete="off"
           />
         </label>
@@ -89,7 +88,6 @@ const handleSubmit = () => {
             v-model="newRowData.name"
             placeholder="Name"
             autocomplete="off"
-            class="fullWidth"
             :class="{ error: validationErrors.name }"
           />
           <span v-if="validationErrors.name" class="error-text">{{ validationErrors.name }}</span>
@@ -102,33 +100,32 @@ const handleSubmit = () => {
             v-model.number="newRowData.radius"
             autocomplete="off"
             placeholder="Radius"
-            class="fullWidth"
             :class="{ error: validationErrors.radius }"
           />
           <span v-if="validationErrors.radius" class="error-text">{{
             validationErrors.radius
           }}</span>
         </label>
-        <fieldset class="typeField" :class="{ error: validationErrors.type }">
-          <legend>Type</legend>
-          <div class="radioGroup">
-            <label>
-              <input type="radio" id="bubble" value="bubble" v-model="newRowData.type" />
-              Bubble
-            </label>
-
-            <label>
-              <input type="radio" id="crack" value="crack" v-model="newRowData.type" />
-              Crack
-            </label>
-
-            <label>
-              <input type="radio" id="scratch" value="scratch" v-model="newRowData.type" />
-              Scratch
-            </label>
-          </div>
-        </fieldset>
-        <span v-if="validationErrors.type" class="error-text">{{ validationErrors.type }}</span>
+        <div class="typeInputContainer">
+          <fieldset class="typeField" :class="{ error: validationErrors.type }">
+            <legend>Type</legend>
+            <div class="radioGroup">
+              <label>
+                <input type="radio" id="bubble" value="bubble" v-model="newRowData.type" />
+                Bubble
+              </label>
+              <label>
+                <input type="radio" id="crack" value="crack" v-model="newRowData.type" />
+                Crack
+              </label>
+              <label>
+                <input type="radio" id="scratch" value="scratch" v-model="newRowData.type" />
+                Scratch
+              </label>
+            </div>
+          </fieldset>
+          <span v-if="validationErrors.type" class="error-text">{{ validationErrors.type }}</span>
+        </div>
         <button type="submit" class="submitButton">Add Row <PlusIcon /></button>
       </form>
     </div>
@@ -140,102 +137,106 @@ const handleSubmit = () => {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-}
 
-.toggleButton {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  width: fit-content;
-  padding: 0.6rem 0.95rem;
-  background: var(--surface);
-  color: var(--text);
-  border: 1px solid var(--border-strong);
-  box-shadow: var(--shadow-sm);
-}
+  .toggleButton {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: fit-content;
+    padding: 0.6rem 0.95rem;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    box-shadow: var(--shadow-sm);
+  }
 
-.formComponent {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 1rem;
-  box-shadow: var(--shadow-sm);
-}
+  .formComponent {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: var(--shadow-sm);
 
-h2 {
-  margin: 0 0 0.8rem;
-  font-size: 1.1rem;
-}
+    h2 {
+      margin: 0 0 0.8rem;
+      font-size: 1.1rem;
+    }
 
-.rowForm {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.65rem;
-  align-items: start;
-}
+    form {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.65rem;
+      align-items: start;
 
-.fieldLabel {
-  display: grid;
-  gap: 0.35rem;
-  font-size: 0.92rem;
-  color: var(--text-muted);
-}
+      .fieldLabel {
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+        font-size: 0.92rem;
+        color: var(--text-muted);
 
-.fullWidth {
-  width: 100%;
-  padding: 0.55rem 0.7rem;
-  color: var(--text);
-  background: var(--surface-2);
-}
+        input {
+          width: 100%;
+          padding: 0.55rem 0.7rem;
+          color: var(--text);
+          background: var(--surface-2);
+        }
 
-.typeField {
-  margin: 0;
-  padding: 0.55rem 0.65rem;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--surface-2);
-}
+        .error {
+          border-color: var(--danger);
+        }
+      }
 
-.typeField legend {
-  padding: 0 0.25rem;
-  color: var(--text-muted);
-  font-size: 0.9rem;
-}
+      .typeInputContainer {
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
 
-.radioGroup {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.8rem;
-}
+        .typeField {
+          margin: 0;
+          padding: 0.55rem 0.65rem;
+          border: 1px solid var(--border);
+          border-radius: 8px;
+          background: var(--surface-2);
 
-.radioGroup label {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  color: var(--text);
-}
+          &.error {
+            border-color: var(--danger);
+            background: var(--danger-soft);
+          }
 
-.typeField.error {
-  border-color: var(--danger);
-  background: var(--danger-soft);
-}
+          legend {
+            padding: 0 0.25rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+          }
 
-.submitButton {
-  justify-self: start;
-  padding: 0.55rem 1rem;
-  color: var(--accent-contrast);
-  background: var(--accent);
-  border-color: var(--accent);
-  display: flex;
-  gap: 0.5rem;
-}
+          .radioGroup {
+            display: flex;
+            gap: 0.8rem;
 
-.error {
-  border-color: var(--danger);
-}
+            label {
+              display: flex;
+              align-items: center;
+              gap: 0.35rem;
+            }
+          }
+        }
+      }
 
-.error-text {
-  color: var(--danger);
-  font-size: 0.84rem;
+      .error-text {
+        color: var(--danger);
+        font-size: 0.84rem;
+      }
+
+      .submitButton {
+        width: fit-content;
+        padding: 0.55rem 1rem;
+        color: var(--accent-contrast);
+        background: var(--accent);
+        border-color: var(--accent);
+        display: flex;
+        gap: 0.5rem;
+      }
+    }
+  }
 }
 </style>
