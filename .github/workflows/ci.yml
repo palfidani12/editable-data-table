@@ -1,0 +1,36 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Dependencies
+        run: |
+          echo "Installing dependencies..."
+          npm install
+
+      - name: Run Linter
+        run: |
+          echo "Running linter..."
+          npm run lint
+          echo "Linter Successful! ✅"
+
+      # 5. Run Unit Tests
+      - name: Run Unit Tests
+        run: |
+          echo "Running unit tests..."
+          npm run test:unit
+          echo "Unit Tests Successful! ✅"
