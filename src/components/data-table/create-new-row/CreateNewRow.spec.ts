@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils'
 import CreateNewRow from './CreateNewRow.vue'
 
 describe('CreateNewRow', () => {
-  it('toggles the create form visibility', async () => {
+  it('toggles the create form', async () => {
     const wrapper = mount(CreateNewRow)
 
     expect(wrapper.find('.formComponent').exists()).toBe(false)
@@ -36,6 +36,7 @@ describe('CreateNewRow', () => {
     const wrapper = mount(CreateNewRow)
 
     await wrapper.get('.toggleButton').trigger('click')
+    expect(wrapper.text()).toContain('Close')
 
     await wrapper.get('#parent_id').setValue('parent-123')
     await wrapper.get('#name').setValue('New Item')
@@ -44,7 +45,7 @@ describe('CreateNewRow', () => {
 
     await wrapper.get('form').trigger('submit.prevent')
 
-    const emitted = wrapper.emitted('addRow')
+    const emitted = wrapper.emitted('createRow')
     expect(emitted).toBeTruthy()
     expect(emitted).toHaveLength(1)
     expect(emitted![0]).toEqual([
@@ -53,12 +54,15 @@ describe('CreateNewRow', () => {
         parent_id: 'parent-123',
         radius: 12,
         type: 'bubble',
+        id: '',
       },
     ])
 
     expect(wrapper.find('.formComponent').exists()).toBe(false)
+    expect(wrapper.text()).toContain('Add New Row')
 
     await wrapper.get('.toggleButton').trigger('click')
+    expect(wrapper.text()).toContain('Close')
 
     expect((wrapper.get('#parent_id').element as HTMLInputElement).value).toBe('')
     expect((wrapper.get('#name').element as HTMLInputElement).value).toBe('')

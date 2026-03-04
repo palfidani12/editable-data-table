@@ -81,7 +81,7 @@ const handleSelectRow = () => {
         {{ props.rawRowData.parent_id }}
       </span>
       <input
-        id="editParentId"
+        :id="`edit-parent-id-${props.rawRowData.id}`"
         v-if="isEditing"
         class="cellInput"
         type="text"
@@ -93,7 +93,7 @@ const handleSelectRow = () => {
         {{ props.rawRowData.name }}
       </span>
       <input
-        id="editName"
+        :id="`edit-name-${props.rawRowData.id}`"
         v-if="isEditing"
         class="cellInput"
         :class="{ inputInvalid: inputErrors.name }"
@@ -107,7 +107,7 @@ const handleSelectRow = () => {
         {{ props.rawRowData.radius }}
       </span>
       <input
-        id="editRadius"
+        :id="`edit-radius-${props.rawRowData.id}`"
         v-if="isEditing"
         class="cellInput"
         :class="{ inputInvalid: inputErrors.radius }"
@@ -122,15 +122,30 @@ const handleSelectRow = () => {
       </span>
       <div v-if="isEditing" class="inlineRadios" :class="{ radioInvalid: inputErrors.type }">
         <label>
-          <input id="editTypeBubble" type="radio" value="bubble" v-model="editedRowData.type" />
+          <input
+            :id="`edit-type-bubble-${props.rawRowData.id}`"
+            type="radio"
+            value="bubble"
+            v-model="editedRowData.type"
+          />
           Bubble
         </label>
         <label>
-          <input id="editTypeCrack" type="radio" value="crack" v-model="editedRowData.type" />
+          <input
+            :id="`edit-type-crack-${props.rawRowData.id}`"
+            type="radio"
+            value="crack"
+            v-model="editedRowData.type"
+          />
           Crack
         </label>
         <label>
-          <input id="editTypeScratch" type="radio" value="scratch" v-model="editedRowData.type" />
+          <input
+            :id="`edit-type-scratch-${props.rawRowData.id}`"
+            type="radio"
+            value="scratch"
+            v-model="editedRowData.type"
+          />
           Scratch
         </label>
       </div>
