@@ -44,6 +44,7 @@ const handleSave = (e: PointerEvent) => {
 }
 
 const handleCancel = (e: PointerEvent) => {
+  editedRowData.value = { ...props.rawRowData }
   isEditing.value = false
   inputErrors.value = {
     name: '',
