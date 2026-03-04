@@ -1,22 +1,43 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { TrashIcon, PencilIcon } from '@primevue/icons'
+import type { RowData } from '../../../data/data'
 const props = defineProps<{
-  rawRowData: {
-    id: string
-    parent_id: string
-    name: string
-    radius: number
-    type: string
-  }
+  rawRowData: RowData
   isHighlighted: boolean
 }>()
 const emit = defineEmits(['delete', 'update', 'rowSelected'])
 
 const isEditing = ref(false)
 const editedRowData = ref({ ...props.rawRowData })
+const inputErrors = ref({
+  name: '',
+  radius: '',
+  type: '',
+})
+
+const validate = () => {
+  if (editedRowData.value.name.trim() === '') {
+    inputErrors.value.name = 'Name cannot be empty'
+    return false
+  }
+  if (editedRowData.value.radius <= 0) {
+    inputErrors.value.radius = 'Radius must be greater than 0'
+    return false
+  }
+  if (editedRowData.value.type === '') {
+    inputErrors.value.type = 'Type must be selected'
+    return false
+  }
+  return true
+}
 
 const handleSave = (e: PointerEvent) => {
+  console.log('Saving row with data:', editedRowData.value)
+  if (!validate()) {
+    e.stopPropagation()
+    return
+  }
   emit('update', { ...editedRowData.value })
   isEditing.value = false
   e.stopPropagation()
@@ -24,6 +45,11 @@ const handleSave = (e: PointerEvent) => {
 
 const handleCancel = (e: PointerEvent) => {
   isEditing.value = false
+  inputErrors.value = {
+    name: '',
+    radius: '',
+    type: '',
+  }
   e.stopPropagation()
 }
 
@@ -61,7 +87,7 @@ const handleSelectRow = () => {
         v-model="editedRowData.parent_id"
       />
     </td>
-    <td>
+    <td class="validationCell">
       <span v-if="!isEditing">
         {{ props.rawRowData.name }}
       </span>
@@ -69,11 +95,13 @@ const handleSelectRow = () => {
         id="editName"
         v-if="isEditing"
         class="cellInput"
+        :class="{ inputInvalid: inputErrors.name }"
         type="text"
         v-model="editedRowData.name"
       />
+      <span v-if="isEditing && inputErrors.name" class="errorText">{{ inputErrors.name }}</span>
     </td>
-    <td>
+    <td class="validationCell">
       <span v-if="!isEditing">
         {{ props.rawRowData.radius }}
       </span>
@@ -81,15 +109,17 @@ const handleSelectRow = () => {
         id="editRadius"
         v-if="isEditing"
         class="cellInput"
+        :class="{ inputInvalid: inputErrors.radius }"
         type="number"
         v-model.number="editedRowData.radius"
       />
+      <span v-if="isEditing && inputErrors.radius" class="errorText">{{ inputErrors.radius }}</span>
     </td>
-    <td>
+    <td class="validationCell">
       <span v-if="!isEditing">
         {{ props.rawRowData.type }}
       </span>
-      <div v-if="isEditing" class="inlineRadios">
+      <div v-if="isEditing" class="inlineRadios" :class="{ radioInvalid: inputErrors.type }">
         <label>
           <input id="editTypeBubble" type="radio" value="bubble" v-model="editedRowData.type" />
           Bubble
@@ -103,6 +133,7 @@ const handleSelectRow = () => {
           Scratch
         </label>
       </div>
+      <span v-if="isEditing && inputErrors.type" class="errorText">{{ inputErrors.type }}</span>
     </td>
     <td>
       <button class="btn neutral" v-if="!isEditing" @click="handleEdit"><PencilIcon /></button>
@@ -154,6 +185,10 @@ td:last-child {
   width: 130px;
 }
 
+.validationCell {
+  white-space: normal;
+}
+
 tr:last-child td {
   border-bottom: 1px solid var(--border);
 }
@@ -169,6 +204,11 @@ tr:last-child td {
   background: var(--surface-2);
 }
 
+.cellInput.inputInvalid {
+  border-color: var(--danger);
+  background: var(--danger-soft);
+}
+
 .inlineRadios {
   display: flex;
   flex-wrap: wrap;
@@ -180,6 +220,22 @@ tr:last-child td {
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
+}
+
+.inlineRadios.radioInvalid {
+  border: 1px solid var(--danger);
+  border-radius: 6px;
+  padding: 0.35rem 0.45rem;
+  background: var(--danger-soft);
+}
+
+.errorText {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.78rem;
+  line-height: 1.25;
+  color: var(--danger);
+  white-space: normal;
 }
 
 .rowActions {

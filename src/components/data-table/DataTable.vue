@@ -1,29 +1,15 @@
 <script setup lang="ts">
-import { syncData } from '@/data/data'
-import DataTableRow from './DataTableRow.vue'
+import { getSavedData, saveData, type RowData } from './../../data/data'
+import DataTableRow from './data-table-row/DataTableRow.vue'
 import { ref, watch, computed } from 'vue'
 import CreateNewRow from './create-new-row/CreateNewRow.vue'
 import { ArrowDownIcon, ArrowUpIcon } from '@primevue/icons'
 
-type RowData = {
-  id: string
-  parent_id: string
-  name: string
-  radius: number
-  type: string
-}
+const savedData = getSavedData()
 
-const LOCAL_STORAGE_KEY = 'editable-table-data'
-const localStorageData:
-  | { id: string; parent_id: string; name: string; radius: number; type: string }[]
-  | null = localStorage.getItem(LOCAL_STORAGE_KEY)
-  ? JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)!)
-  : null
-
-const tableRows = ref(localStorageData ?? syncData)
+const tableRows = ref(savedData)
 const highlightedRowId = ref<string | null>(null)
-
-const sortedColKey = ref<undefined | keyof RowData>(undefined)
+const sortedColKey = ref<keyof RowData | null>(null)
 const sortedColDirection = ref<'asc' | 'desc'>('asc')
 
 const headerCells: { key: keyof RowData; label: string }[] = [
@@ -35,9 +21,7 @@ const headerCells: { key: keyof RowData; label: string }[] = [
 ]
 
 const sortedRows = computed(() => {
-  if (!sortedColKey.value) {
-    return tableRows.value
-  } else {
+  if (sortedColKey.value) {
     return [...tableRows.value].sort((a, b) => {
       const aValue = a[sortedColKey.value!]
       const bValue = b[sortedColKey.value!]
@@ -46,7 +30,10 @@ const sortedRows = computed(() => {
       return 0
     })
   }
+  return tableRows.value
 })
+
+watch(tableRows, (newValue) => saveData(newValue), { deep: true })
 
 const sortByColumn = (colKey: keyof RowData) => {
   if (sortedColKey.value === colKey) {
@@ -57,34 +44,14 @@ const sortByColumn = (colKey: keyof RowData) => {
   }
 }
 
-watch(
-  tableRows,
-  (newValue) => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newValue))
-  },
-  { deep: true },
-)
-
-const handleAddRow = (newRow: {
-  name: string
-  parent_id: string
-  radius: number
-  type: string
-}) => {
+const handleRowCreate = (newRow: RowData) => {
   const newRowWithId = { ...newRow, id: crypto.randomUUID() }
   tableRows.value.push(newRowWithId)
 }
 
-const handleRowUpdate = (updatedRow: {
-  id: string
-  parent_id: string
-  name: string
-  radius: number
-  type: string
-}) => {
+const handleRowUpdate = (updatedRow: RowData) => {
   const index = tableRows.value.findIndex((row) => row.id === updatedRow.id)
   tableRows.value[index] = updatedRow
-  console.log('Row updated:', tableRows.value)
 }
 
 const handleRowDelete = (id: string) => {
@@ -94,20 +61,16 @@ const handleRowDelete = (id: string) => {
 
 <template>
   <section class="tableSection">
-    <CreateNewRow @addRow="handleAddRow" />
+    <CreateNewRow @createRow="handleRowCreate" />
     <table>
       <thead>
         <tr>
           <th scope="col" v-for="headerCell in headerCells" :key="headerCell.key">
             <span class="headerCell" @click="sortByColumn(headerCell.key)"
               >{{ headerCell.label }}
-              <span>
-                <ArrowDownIcon
-                  v-if="sortedColKey === headerCell.key && sortedColDirection === 'desc'"
-                />
-                <ArrowUpIcon
-                  v-if="sortedColKey === headerCell.key && sortedColDirection === 'asc'"
-                /> </span
+              <span v-if="sortedColKey === headerCell.key">
+                <ArrowDownIcon v-if="sortedColDirection === 'desc'" />
+                <ArrowUpIcon v-else /> </span
             ></span>
           </th>
           <th></th>

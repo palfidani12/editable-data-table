@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { PlusIcon, TimesIcon } from '@primevue/icons'
-const emit = defineEmits(['addRow'])
-const newRowData = ref({
+import type { RowData } from '@/data/data'
+
+const emit = defineEmits(['createRow'])
+const newRowData = ref<RowData>({
   name: '',
   parent_id: '',
   radius: 0,
   type: '',
+  id: '',
 })
 const validationErrors = ref({
   name: '',
@@ -14,7 +17,7 @@ const validationErrors = ref({
   radius: '',
   type: '',
 })
-const addNewRowOpen = ref(false)
+const formOpen = ref(false)
 
 const validateForm = () => {
   let isValid = true
@@ -44,13 +47,14 @@ const validateForm = () => {
 
 const handleSubmit = () => {
   if (validateForm()) {
-    emit('addRow', newRowData.value)
-    addNewRowOpen.value = false
+    emit('createRow', newRowData.value)
+    formOpen.value = false
     newRowData.value = {
       name: '',
       parent_id: '',
       radius: 0,
       type: '',
+      id: '',
     }
   }
 }
@@ -58,12 +62,12 @@ const handleSubmit = () => {
 
 <template>
   <div class="createRowContainer">
-    <button class="toggleButton" @click="addNewRowOpen = !addNewRowOpen">
-      {{ addNewRowOpen ? 'Close' : 'Add New Row' }}
-      <PlusIcon v-if="!addNewRowOpen" />
+    <button class="toggleButton" @click="formOpen = !formOpen">
+      {{ formOpen ? 'Close' : 'Add New Row' }}
+      <PlusIcon v-if="!formOpen" />
       <TimesIcon v-else />
     </button>
-    <div v-if="addNewRowOpen" class="formComponent">
+    <div v-if="formOpen" class="formComponent">
       <h2>Create New Row</h2>
       <form class="rowForm" @submit.prevent="handleSubmit">
         <label class="fieldLabel" for="parent_id">

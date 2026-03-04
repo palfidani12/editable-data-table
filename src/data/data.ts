@@ -35,3 +35,23 @@ export const syncData = [
     type: 'bubble',
   },
 ]
+
+export type RowData = {
+  id: string
+  parent_id: string
+  name: string
+  radius: number
+  type: string
+}
+
+const LOCAL_STORAGE_KEY = 'editable-table-data'
+export const getSavedData = (): RowData[] => {
+  const localStorageData: RowData[] | null = localStorage.getItem(LOCAL_STORAGE_KEY)
+    ? JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)!)
+    : null
+  return localStorageData || syncData
+}
+
+export const saveData = (data: RowData[]) => {
+  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data))
+}
